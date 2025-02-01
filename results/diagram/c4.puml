@@ -1,0 +1,38 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title C4 Diagram - Производственная Система Мониторинга
+
+Person(operator, "Оператор", "Использует систему мониторинга и вносит отчеты о тех-обслуживании")
+
+System_Boundary(factory, "Производственная площадка") {
+    System(temperature_sensor, "MOD301 (GY-906 MLX90614)", "Снимает бесконтактные измерения температуры")
+    System(env_temperature_sensor, "DHT22", "Измеряет температуру среды")
+    System(vibration_sensor, "SW-420", "Измеряет вибрации")
+    System(microphone, "Микрофон", "Записывает звук")
+    System(humidity_sensor, "BME280", "Измеряет влажность и температуру")
+    System(machine_sensors, "Предустановленные датчики", "Передают данные через интерфейс станка")
+    System(server, "Локальный сервер", "Собирает данные с датчиков и передает в облако")
+
+    temperature_sensor -down-> server : Передает температуру
+    env_temperature_sensor -down-> server : Передает температуру среды
+    vibration_sensor -down-> server : Передает вибрации
+    microphone -down-> server : Передает звук
+    humidity_sensor -down-> server : Передает влажность и температуру
+    machine_sensors -down-> server : Передает данные о работе станка
+}
+
+System_Boundary(cloud, "Облако") {
+    System(clickhouse, "ClickHouse", "Хранит данные с датчиков")
+    System(grafana, "Grafana", "Визуализирует данные в реальном времени")
+    System(maintenance_app, "Система отчетов ТО", "Позволяет операторам вносить данные о ремонтах")
+
+    server -down-> clickhouse : Передает данные сенсоров
+    grafana -down-> clickhouse : Запрашивает и визуализирует данные
+    operator -down-> grafana : Просматривает данные в реальном времени
+    operator -down-> maintenance_app : Вносит отчеты о ремонте
+    maintenance_app -down-> clickhouse : Сохраняет информацию о ремонтах
+    clickhouse -down-> maintenance_app : Предоставляет данные об оборудовании
+}
+
+@enduml

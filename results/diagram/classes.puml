@@ -1,0 +1,64 @@
+@startuml
+
+class SensorData {
+    +id: int
+    +timestamp: datetime
+    +sensor_type: string
+    +value: float
+}
+
+class VibrationData {
+    +id: int
+    +timestamp: datetime
+    +value: float
+}
+
+class TemperatureData {
+    +id: int
+    +timestamp: datetime
+    +value: float
+}
+
+class SoundData {
+    +id: int
+    +timestamp: datetime
+    +value: float
+}
+
+class EnvironmentData {
+    +id: int
+    +timestamp: datetime
+    +temperature: float
+    +humidity: float
+}
+
+class MachineState {
+    +id: int
+    +timestamp: datetime
+    +state: string
+    +fault_type: string
+}
+
+class RepairLog {
+    +id: int
+    +timestamp: datetime
+    +operator_id: int
+    +machine_id: int
+    +description: string
+}
+
+class Operator {
+    +id: int
+    +name: string
+}
+
+SensorData <|-- VibrationData
+SensorData <|-- TemperatureData
+SensorData <|-- SoundData
+SensorData <|-- EnvironmentData
+
+MachineState "1" -- "0..*" SensorData
+MachineState "1" -- "0..*" RepairLog
+Operator "1" -- "0..*" RepairLog
+
+@enduml

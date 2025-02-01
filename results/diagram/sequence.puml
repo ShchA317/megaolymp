@@ -1,0 +1,19 @@
+@startuml
+
+actor Operator
+participant "Cutting Machine" as CM
+participant "Metric Collection System" as DB
+participant "AI Model" as AI
+
+Operator -> CM: Запускает работу станка
+CM -> DB: Отправляет данные сенсоров (вибрация, температура, звук, среда)
+DB -> AI: Передает данные для анализа
+
+AI -> AI: Обучение модели (ML training)
+AI -> DB: Обновляет состояние станка
+DB -> Operator: Сообщает о состоянии станка
+
+Operator -> DB: Вносит информацию о ремонте
+DB -> AI: Передает обновленные данные
+
+@enduml
